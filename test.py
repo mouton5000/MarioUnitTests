@@ -35,7 +35,13 @@ class TestLevel(unittest.TestCase):
         self.assertEqual(level.mario.l, 7)
     
     def test_if_mario_jump_below_a_platform_mario_doesnot_move_above_the_platform(self):
-        self.assertTrue(False)
+
+        level = model.Level(None, 10, 10, 9, 0)
+        level.set_platform(8, 0, 2)
+        level.jump_mario()
+        level.update()
+
+        self.assertEqual(level.mario.l, 9)
 
 
 if __name__ == '__main__':

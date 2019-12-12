@@ -24,6 +24,9 @@ class Level:
             self.cells[l][c + cp].type = SPIKE
 
     def move_mario(self, dc, display=False):
+        if self.mario.c == 0 and dc == -1:
+            return
+
         self.mario.c += dc
 
     def get_cell_below_mario(self):
