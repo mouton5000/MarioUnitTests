@@ -18,6 +18,7 @@ level.set_platform(height - 1, 0, width)
 level.set_platform(20, 10, 5)
 level.set_spikes(20, 15, 5)
 level.set_platform(20, 20, 5)
+level.set_items(21,10,model.MUSHROOM)
 level.display()
 
 

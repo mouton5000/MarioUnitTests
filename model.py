@@ -4,7 +4,11 @@ GROUND = 1
 SPIKE = 2
 OUT = 3
 
+
+MUSHROOM = 0
+
 symbols = [' ', 'T', 'X', 'O']
+items_symbol = ['P']
 mariosymb = 'M'
 
 class Level:
@@ -23,6 +27,9 @@ class Level:
         for cp in range(w):
             self.cells[l][c + cp].type = SPIKE
 
+    def set_items(self, l, c , it):
+        self.cells[l][c].item = it
+
     def move_mario(self, dc, display=False):
         if self.mario.c == 0 and dc == -1:
             return
@@ -33,12 +40,21 @@ class Level:
         if self.get_cell_below_mario().type == SPIKE:
             self.kill_mario()
 
+        if self.get_cell_on_mario().item == MUSHROOM:
+            self.mario.grows()
+            self.get_cell_on_mario().item = None
+
+        
+
 
     def get_cell_below_mario(self):
         return self.cells[self.mario.l + 1][self.mario.c]
 
+    def get_cell_on_mario(self):
+        return self.cells[self.mario.l][self.mario.c]
+
     def jump_mario(self):
-        if self.mario.vl != 0:
+        if self.mario.vl != 0 or self.get_cell_below_mario().type != GROUND:
             return
         self.mario.vl = 2
 
@@ -74,6 +90,7 @@ class Level:
         self.mario.vl = 0
         self.mario.c = 0
         self.mario.l = self.height - 2
+        self.mario.size = 1
 
     def display(self):
         for line in self.cells:
@@ -85,10 +102,11 @@ class Level:
 
 
 class Cell:
-    def __init__(self, t, l, c):
+    def __init__(self, t, l, c, item=None):
         self.type = t
         self.l = l
         self.c = c
+        self.item = item
     
     @property
     def type(self):
@@ -100,6 +118,8 @@ class Cell:
 
     def display(self, stdscr, refresh=False):
         stdscr.addstr(self.l, self.c, symbols[self.type])
+        if self.item is not None:
+            stdscr.addstr(self.l, self.c, items_symbol[self.item])
         if refresh:
             stdscr.refresh()
 
@@ -109,8 +129,15 @@ class Mario:
         self.l = l
         self.c = c
         self.vl = 0
+        self.size = 1
 
     def display(self, stdscr, refresh=False):
         stdscr.addstr(self.l, self.c, mariosymb)
+        if self.size == 2:
+            stdscr.addstr(self.l -1, self.c, mariosymb)
+
         if refresh:
             stdscr.refresh()
+
+    def grows(self):
+        self.size = 2
