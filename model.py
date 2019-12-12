@@ -26,12 +26,12 @@ class Level:
     def move_mario(self, dc, display=False):
         if self.mario.c == 0 and dc == -1:
             return
-
+        if self.mario.c == self.width -1 and dc == 1:
+            return
         self.mario.c += dc
 
         if self.get_cell_below_mario().type == SPIKE:
-            self.mario.c = 0
-            self.mario.l = self.height - 2
+            self.kill_mario()
 
 
     def get_cell_below_mario(self):
@@ -46,25 +46,34 @@ class Level:
         if self.mario.vl != 0 or self.get_cell_below_mario().type != GROUND:
             if self.mario.vl > 0:
                 for l in range(self.mario.l - 1, self.mario.l - self.mario.vl - 1, -1):
-                    if self.cells[l][self.mario.c].type != EMPTY:
+                    if self.cells[l][self.mario.c].type == GROUND:
                         self.mario.vl = 0
                         self.mario.l = l + 1
                         break
+                    elif self.cells[l][self.mario.c].type == SPIKE:
+                        self.kill_mario()
                 else:
                     self.mario.l -= self.mario.vl
                     self.mario.vl -= 1
             else:
                 for l in range(self.mario.l + 1, self.mario.l - self.mario.vl + 1):
-                    if self.cells[l][self.mario.c].type != EMPTY:
+                    if self.cells[l][self.mario.c].type == GROUND:
                         self.mario.vl = 0
                         self.mario.l = l - 1
                         break
+                    elif self.cells[l][self.mario.c].type == SPIKE:
+                        self.kill_mario()
+
+
                 else:
                     self.mario.l -= self.mario.vl
                     self.mario.vl -= 1
 
 
-
+    def kill_mario(self) :
+        self.mario.vl = 0
+        self.mario.c = 0
+        self.mario.l = self.height - 2
 
     def display(self):
         for line in self.cells:

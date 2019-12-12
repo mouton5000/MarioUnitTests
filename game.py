@@ -9,7 +9,7 @@ curses.curs_set(0)
 stdscr.keypad(True)
 
 stdscr.clear()
-stdscr.timeout(33)
+stdscr.timeout(100)
 
 width = curses.COLS - 1
 height = 23
