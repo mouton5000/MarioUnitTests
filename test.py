@@ -103,8 +103,18 @@ class TestLevel(unittest.TestCase):
         level.move_mario(1)
         self.assertEqual(level.mario.size,2)
 
+    def test_if_big_mario_falls_he_become_little(self):
+        level = model.Level(None, 10, 10, 8, 0)
+        level.set_platform(9, 0, 3)
+        level.set_spikes(9, 3, 2)
+        level.set_items(8, 2, model.MUSHROOM)
+        level.move_mario(2)
+        level.move_mario(2)
 
-
+        self.assertEqual(level.mario.c, 4)
+        self.assertEqual(level.mario.l, 8)
+        self.assertEqual(level.mario.size, 1)
+        self.assertTrue(level.mario.cpt > 0)
 
 
 

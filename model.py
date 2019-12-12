@@ -1,15 +1,18 @@
 import curses
+
 EMPTY = 0
 GROUND = 1
 SPIKE = 2
 OUT = 3
 
+COUNTER = 30
 
 MUSHROOM = 0
 
 symbols = [' ', 'T', 'X', 'O']
 items_symbol = ['P']
 mariosymb = 'M'
+
 
 class Level:
     def __init__(self, stdscr, width, height, ml, mc):
@@ -22,18 +25,18 @@ class Level:
     def set_platform(self, l, c, w):
         for cp in range(w):
             self.cells[l][c + cp].type = GROUND
-            
+
     def set_spikes(self, l, c, w):
         for cp in range(w):
             self.cells[l][c + cp].type = SPIKE
 
-    def set_items(self, l, c , it):
+    def set_items(self, l, c, it):
         self.cells[l][c].item = it
 
     def move_mario(self, dc, display=False):
         if self.mario.c == 0 and dc == -1:
             return
-        if self.mario.c == self.width -1 and dc == 1:
+        if self.mario.c == self.width - 1 and dc == 1:
             return
         self.mario.c += dc
 
@@ -43,9 +46,6 @@ class Level:
         if self.get_cell_on_mario().item == MUSHROOM:
             self.mario.grows()
             self.get_cell_on_mario().item = None
-
-        
-
 
     def get_cell_below_mario(self):
         return self.cells[self.mario.l + 1][self.mario.c]
@@ -59,6 +59,9 @@ class Level:
         self.mario.vl = 2
 
     def update(self):
+        if self.mario.cpt != 0:
+            self.mario.cpt -= 1
+
         if self.mario.vl != 0 or self.get_cell_below_mario().type != GROUND:
             if self.mario.vl > 0:
                 for l in range(self.mario.l - 1, self.mario.l - self.mario.vl - 1, -1):
@@ -85,12 +88,20 @@ class Level:
                     self.mario.l -= self.mario.vl
                     self.mario.vl -= 1
 
+    def kill_mario(self):
+        if self.mario.cpt != 0:
+            return
 
-    def kill_mario(self) :
-        self.mario.vl = 0
-        self.mario.c = 0
-        self.mario.l = self.height - 2
-        self.mario.size = 1
+        if self.mario.size == 1:
+            self.mario.vl = 0
+            self.mario.c = 0
+            self.mario.l = self.height - 2
+        else:
+            self.mario.cpt = COUNTER
+
+            self.mario.vl = 0
+            self.mario.size = 1
+
 
     def display(self):
         for line in self.cells:
@@ -100,14 +111,13 @@ class Level:
         self.stdscr.refresh()
 
 
-
 class Cell:
     def __init__(self, t, l, c, item=None):
         self.type = t
         self.l = l
         self.c = c
         self.item = item
-    
+
     @property
     def type(self):
         return self.__t
@@ -126,15 +136,19 @@ class Cell:
 
 class Mario:
     def __init__(self, l, c):
+        self.cpt = 0
         self.l = l
         self.c = c
         self.vl = 0
         self.size = 1
 
     def display(self, stdscr, refresh=False):
+        if self.cpt % 2 == 1:
+            return
+
         stdscr.addstr(self.l, self.c, mariosymb)
         if self.size == 2:
-            stdscr.addstr(self.l -1, self.c, mariosymb)
+            stdscr.addstr(self.l - 1, self.c, mariosymb)
 
         if refresh:
             stdscr.refresh()

@@ -15,9 +15,9 @@ width = curses.COLS - 1
 height = 23
 level = model.Level(stdscr, width, height, height - 2, 0)
 level.set_platform(height - 1, 0, width)
-level.set_platform(20, 10, 5)
-level.set_spikes(20, 15, 5)
-level.set_platform(20, 20, 5)
+level.set_platform(19, 10, 5)
+level.set_spikes(19, 15, 5)
+level.set_platform(19, 20, 5)
 level.set_items(21,10,model.MUSHROOM)
 level.display()
 
