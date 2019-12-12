@@ -29,6 +29,11 @@ class Level:
 
         self.mario.c += dc
 
+        if self.get_cell_below_mario().type == SPIKE:
+            self.mario.c = 0
+            self.mario.l = self.height - 2
+
+
     def get_cell_below_mario(self):
         return self.cells[self.mario.l + 1][self.mario.c]
 

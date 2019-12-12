@@ -12,7 +12,7 @@ stdscr.clear()
 stdscr.timeout(33)
 
 width = curses.COLS - 1
-height = curses.LINES - 1
+height = 23
 level = model.Level(stdscr, width, height, height - 2, 0)
 level.set_platform(height - 1, 0, width)
 level.set_platform(20, 10, 5)
